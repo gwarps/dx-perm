@@ -10,4 +10,12 @@ class Movie < ActiveRecord::Base
   data = Movie.where(:rating=>keys)
   return data.order(sort_by)
  end
+
+ def self.rating_hash
+  rate = Hash.new
+  Movie.all.each do |movie|
+   rate[movie.rating] = nil
+  end
+  return rate
+ end
 end

@@ -9,6 +9,11 @@ class MoviesController < ApplicationController
   def index
     sort_by = params[:sort_by]
     @ratings = params[:ratings]
+    puts "++++++++++++++++++++"
+    puts @ratings.inspect
+    puts @ratings.nil?
+    puts Movie.rating_hash
+    puts "++++++++++++++++++++"
     if @ratings.nil?
      if params[:commit].eql?("Refresh")
        session.delete(:ratings)
@@ -21,10 +26,19 @@ class MoviesController < ApplicationController
       redirect_to movies_path(:ratings=>@ratings,:sort_by=>sort_by)
      end
     end
+
+    if @ratings.nil? && !params[:commit].eql?("Refresh")
+     @ratings = Movie.rating_hash
+     redirect_to movies_path(:ratings=>@ratings,:sort_by=>nil)
+    end
+
+
     session[:ratings] = @ratings
     session[:sort_by] = sort_by
+
     @movies = Movie.sort_rate(@ratings,sort_by)
     @all_ratings = Movie.rating_list
+
   end
 
   def new
